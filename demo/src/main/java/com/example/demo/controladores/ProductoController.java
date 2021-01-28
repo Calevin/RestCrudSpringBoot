@@ -1,9 +1,12 @@
 package com.example.demo.controladores;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,8 +35,13 @@ public class ProductoController {
 	 * @return
 	 */
 	@GetMapping("/producto")
-	public List<Producto> obtenerTodos() {
-		return productoRepositorio.findAll();
+	public ResponseEntity<List<Producto>> obtenerTodos() {
+		List<Producto> productos = productoRepositorio.findAll();
+		if (productos.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		} else {
+			return ResponseEntity.ok(productos);
+		}
 	}
 
 	/**
@@ -43,8 +51,10 @@ public class ProductoController {
 	 * @return Null si no encuentra el producto
 	 */
 	@GetMapping("/producto/{id}")
-	public Producto obtenerUno(@PathVariable Long id) {
-		return productoRepositorio.findById(id).orElse(null);
+	public ResponseEntity<Producto> obtenerUno(@PathVariable Long id) {
+		return productoRepositorio.findById(id)
+				.map(p -> ResponseEntity.ok(p))
+				.orElse(ResponseEntity.notFound().build());
 	}
 
 	/**
@@ -54,8 +64,8 @@ public class ProductoController {
 	 * @return producto insertado
 	 */
 	@PostMapping("/producto")
-	public Producto nuevoProducto(@RequestBody Producto nuevo) {
-		return productoRepositorio.save(nuevo);
+	public ResponseEntity<Producto> nuevoProducto(@RequestBody Producto nuevo) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(productoRepositorio.save(nuevo));
 	}
 
 	/**
@@ -65,11 +75,11 @@ public class ProductoController {
 	 * @return
 	 */
 	@PutMapping("/producto/{id}")
-	public Producto editarProducto(@RequestBody Producto editar, @PathVariable Long id) {
+	public ResponseEntity<Producto> editarProducto(@RequestBody Producto editar, @PathVariable Long id) {
 		return productoRepositorio
 				.findById(id)
-				.map( p -> productoRepositorio.save(editar) )
-				.orElse(null);
+				.map( p -> ResponseEntity.ok(productoRepositorio.save(editar)))
+				.orElse(ResponseEntity.notFound().build());
 	}
 
 	/**
@@ -79,13 +89,13 @@ public class ProductoController {
 	 * @return
 	 */
 	@DeleteMapping("/producto/{id}")
-	public Producto borrarProducto(@PathVariable Long id) {
+	public ResponseEntity<?> borrarProducto(@PathVariable Long id) {
 		return productoRepositorio
 				.findById(id)
 				.map( p -> {
 					productoRepositorio.deleteById(id);
-					return p;
+					return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 				})
-				.orElse(null);
+				.orElse(ResponseEntity.notFound().build());
 	}
 }
