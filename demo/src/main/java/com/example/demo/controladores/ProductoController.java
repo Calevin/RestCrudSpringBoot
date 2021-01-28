@@ -1,6 +1,7 @@
 package com.example.demo.controladores;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,8 +44,7 @@ public class ProductoController {
 	 */
 	@GetMapping("/producto/{id}")
 	public Producto obtenerUno(@PathVariable Long id) {
-		// TODO implementar
-		return null;
+		return productoRepositorio.findById(id).orElse(null);
 	}
 
 	/**
@@ -55,8 +55,7 @@ public class ProductoController {
 	 */
 	@PostMapping("/producto")
 	public Producto nuevoProducto(@RequestBody Producto nuevo) {
-		// TODO implementar
-		return null;
+		return productoRepositorio.save(nuevo);
 	}
 
 	/**
@@ -67,8 +66,10 @@ public class ProductoController {
 	 */
 	@PutMapping("/producto/{id}")
 	public Producto editarProducto(@RequestBody Producto editar, @PathVariable Long id) {
-		// TODO implementar
-		return null;
+		return productoRepositorio
+				.findById(id)
+				.map( p -> productoRepositorio.save(editar) )
+				.orElse(null);
 	}
 
 	/**
@@ -79,7 +80,12 @@ public class ProductoController {
 	 */
 	@DeleteMapping("/producto/{id}")
 	public Producto borrarProducto(@PathVariable Long id) {
-		// TODO implementar
-		return null;
+		return productoRepositorio
+				.findById(id)
+				.map( p -> {
+					productoRepositorio.deleteById(id);
+					return p;
+				})
+				.orElse(null);
 	}
 }
