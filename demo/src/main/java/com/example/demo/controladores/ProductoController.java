@@ -1,8 +1,6 @@
 package com.example.demo.controladores;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,10 +50,10 @@ public class ProductoController {
 	 * @return Null si no encuentra el producto
 	 */
 	@GetMapping("/producto/{id}")
-	public Producto obtenerUno(@PathVariable Long id) {
+	public ResponseEntity<Producto> obtenerUno(@PathVariable Long id) {
 		return productoRepositorio.findById(id)
-				//.map(p -> ResponseEntity.ok(p))
-				.orElseThrow(() -> new NotFoundException(id)); 
+				.map(p -> ResponseEntity.ok(p))
+				.orElse(ResponseEntity.notFound().build());
 	}
 
 	/**
