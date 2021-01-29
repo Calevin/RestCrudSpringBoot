@@ -73,11 +73,11 @@ public class ProductoController {
 	 * @return
 	 */
 	@PutMapping("/producto/{id}")
-	public ResponseEntity<Producto> editarProducto(@RequestBody Producto editar, @PathVariable Long id) {
+	public Producto editarProducto(@RequestBody Producto editar, @PathVariable Long id) {
 		return productoRepositorio
 				.findById(id)
-				.map( p -> ResponseEntity.ok(productoRepositorio.save(editar)))
-				.orElse(ResponseEntity.notFound().build());
+				.map(p -> productoRepositorio.save(editar))
+				.orElseThrow(() -> new NotFoundException(id));
 	}
 
 	/**
@@ -94,6 +94,6 @@ public class ProductoController {
 					productoRepositorio.deleteById(id);
 					return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 				})
-				.orElse(ResponseEntity.notFound().build());
+				.orElseThrow(() -> new NotFoundException(id));
 	}
 }
