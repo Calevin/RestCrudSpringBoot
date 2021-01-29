@@ -19,6 +19,7 @@ import com.example.demo.errores.ApiError;
 import com.example.demo.errores.NotFoundException;
 import com.example.demo.modelos.Producto;
 import com.example.demo.servicios.ProductoRepositorio;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 @RestController
 public class ProductoController {
@@ -109,5 +110,16 @@ public class ProductoController {
 		apiError.setMensaje(ex.getMessage());
 		
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+	}
+	
+	@ExceptionHandler(JsonMappingException.class)
+	public ResponseEntity<ApiError> handleJsonMappingException(JsonMappingException ex){
+		ApiError apiError = new ApiError();
+		
+		apiError.setEstado(HttpStatus.BAD_REQUEST);
+		apiError.setFecha(LocalDateTime.now());
+		apiError.setMensaje(ex.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
 }
