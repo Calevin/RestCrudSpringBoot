@@ -1,6 +1,7 @@
 package com.example.demo.controladores;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dtos.ConverterDTO;
+import com.example.demo.dtos.ProductoDTO;
 import com.example.demo.errores.NotFoundException;
 import com.example.demo.modelos.Producto;
 import com.example.demo.servicios.ProductoRepositorio;
@@ -34,15 +37,17 @@ public class ProductoController {
 	 * @return
 	 */
 	@GetMapping("/producto")
-	public ResponseEntity<List<Producto>> obtenerTodos() {
+	public ResponseEntity<List<ProductoDTO>> obtenerTodos() {
 		List<Producto> productos = productoRepositorio.findAll();
 		if (productos.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		} else {
-			return ResponseEntity.ok(productos);
+			return ResponseEntity.ok(productos.stream()
+										.map(ConverterDTO::productoDTOconverter)
+										.collect(Collectors.toList()));
 		}
 	}
-
+	
 	/**
 	 * Obtenemos un producto en base a su ID
 	 * 
@@ -50,8 +55,8 @@ public class ProductoController {
 	 * @return Null si no encuentra el producto
 	 */
 	@GetMapping("/producto/{id}")
-	public Producto obtenerUno(@PathVariable Long id) {
-		return productoRepositorio.findById(id)
+	public ProductoDTO obtenerUno(@PathVariable Long id) {
+		return productoRepositorio.findById(id).map(ConverterDTO::productoDTOconverter)
 				.orElseThrow(() -> new NotFoundException(id));
 	}
 
