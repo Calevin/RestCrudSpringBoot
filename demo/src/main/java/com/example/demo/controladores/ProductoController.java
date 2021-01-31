@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.ConverterDTO;
+import com.example.demo.dtos.CreateProductoDTO;
 import com.example.demo.dtos.ProductoDTO;
 import com.example.demo.errores.NotFoundException;
 import com.example.demo.modelos.Producto;
@@ -23,12 +24,16 @@ import com.example.demo.servicios.ProductoRepositorio;
 @RestController
 public class ProductoController {
 
+	private final ConverterDTO converterDTO;
 	private final ProductoRepositorio productoRepositorio;
+	
 
 	@Autowired
-	public ProductoController(ProductoRepositorio productoRepositorio) {
+	public ProductoController(ProductoRepositorio productoRepositorio
+			, ConverterDTO converterDTO) {
 		super();
 		this.productoRepositorio = productoRepositorio;
+		this.converterDTO = converterDTO;
 	}
 
 	/**
@@ -43,7 +48,7 @@ public class ProductoController {
 			return ResponseEntity.notFound().build();
 		} else {
 			return ResponseEntity.ok(productos.stream()
-										.map(ConverterDTO::productoDTOconverter)
+										.map(converterDTO::productoDTOconverter)
 										.collect(Collectors.toList()));
 		}
 	}
@@ -56,7 +61,7 @@ public class ProductoController {
 	 */
 	@GetMapping("/producto/{id}")
 	public ProductoDTO obtenerUno(@PathVariable Long id) {
-		return productoRepositorio.findById(id).map(ConverterDTO::productoDTOconverter)
+		return productoRepositorio.findById(id).map(converterDTO::productoDTOconverter)
 				.orElseThrow(() -> new NotFoundException(id));
 	}
 
@@ -67,8 +72,9 @@ public class ProductoController {
 	 * @return producto insertado
 	 */
 	@PostMapping("/producto")
-	public ResponseEntity<Producto> nuevoProducto(@RequestBody Producto nuevo) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(productoRepositorio.save(nuevo));
+	public ResponseEntity<Producto> nuevoProducto(@RequestBody CreateProductoDTO createProducto) {
+		Producto productoNuevo =  converterDTO.createProductoDTOconverter(createProducto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(productoRepositorio.save(productoNuevo));
 	}
 
 	/**
