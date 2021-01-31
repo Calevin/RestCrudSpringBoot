@@ -3,6 +3,8 @@ package com.example.demo.modelos;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Producto {
@@ -14,14 +16,19 @@ public class Producto {
 	
 	private float precio;
 	
+	@ManyToOne
+	@JoinColumn(name="categoria_id")
+	private Categoria categoria;	
+	
 	public Producto() {
 	}
 			
-	public Producto(Long id, String nombre, float precio) {
+	public Producto(Long id, String nombre, float precio, Categoria categoria) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.precio = precio;
+		this.categoria = categoria;
 	}
 
 	public Long getId() {
@@ -46,5 +53,13 @@ public class Producto {
 
 	public void setPrecio(float precio) {
 		this.precio = precio;
+	}
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
 	}
 }
