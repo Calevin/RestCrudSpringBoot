@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,6 +50,22 @@ public class ProductoController {
 		if (productos.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		} else {
+			return ResponseEntity.ok(productos.stream()
+										.map(converterDTO::productoDTOconverter)
+										.collect(Collectors.toList()));
+		}
+	}
+	
+	@GetMapping("/producto_paginado")
+	public ResponseEntity<?> obtenerTodosPaginado(
+			@PageableDefault(size=10, page=0) Pageable pageable) {
+		
+		Page<Producto> productos = productoRepositorio.findAll(pageable);
+		
+		if (productos.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		} else {
+			
 			return ResponseEntity.ok(productos.stream()
 										.map(converterDTO::productoDTOconverter)
 										.collect(Collectors.toList()));
