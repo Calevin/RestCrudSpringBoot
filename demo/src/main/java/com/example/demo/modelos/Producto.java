@@ -16,6 +16,8 @@ public class Producto {
 	
 	private float precio;
 	
+	private String imagen;
+	
 	@ManyToOne
 	@JoinColumn(name="categoria_id")
 	private Categoria categoria;	
@@ -23,12 +25,13 @@ public class Producto {
 	public Producto() {
 	}
 			
-	public Producto(Long id, String nombre, float precio, Categoria categoria) {
+	public Producto(Long id, String nombre, float precio, Categoria categoria, String imagen) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.precio = precio;
 		this.categoria = categoria;
+		this.setImagen(imagen);
 	}
 
 	public Long getId() {
@@ -61,5 +64,13 @@ public class Producto {
 
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
+	}
+
+	public String getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(String imagen) {
+		this.imagen = imagen;
 	}
 }
