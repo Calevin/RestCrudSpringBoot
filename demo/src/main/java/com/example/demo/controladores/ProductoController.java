@@ -22,7 +22,7 @@ import com.example.demo.dtos.CreateProductoDTO;
 import com.example.demo.dtos.ProductoDTO;
 import com.example.demo.errores.NotFoundException;
 import com.example.demo.modelos.Producto;
-import com.example.demo.servicios.ProductoRepositorio;
+import com.example.demo.repositorios.ProductoRepositorio;
 
 @RestController
 public class ProductoController {

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.demo.modelos.Categoria;
 import com.example.demo.modelos.Producto;
-import com.example.demo.servicios.CategoriaRepositorio;
+import com.example.demo.repositorios.CategoriaRepositorio;
 
 @Component
 public class ConverterDTO {
