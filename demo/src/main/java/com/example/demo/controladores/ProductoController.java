@@ -3,6 +3,8 @@ package com.example.demo.controladores;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.ConverterDTO;
@@ -69,6 +72,28 @@ public class ProductoController {
 			return ResponseEntity.ok(productos.stream()
 										.map(converterDTO::productoDTOconverter)
 										.collect(Collectors.toList()));
+		}
+	}
+	
+	/**
+	 * Obtener un listado de productos por nombre
+	 * @param txt Cadena de caracteres que se usará para buscar en el nombre
+	 * @return 404 si no se encuentran resultados. 200 y el conjunto de productos si se encuentra
+	 */
+	@GetMapping(value = "/producto", params = "nombre")
+	public ResponseEntity<?> buscarProductosPorNombre(
+			@RequestParam("nombre") String txt,
+			Pageable pageable, HttpServletRequest request) {
+		
+		Page<Producto> result = productoServicio.findByNombre(txt, pageable);		
+	
+		if (result.isEmpty()) {
+			throw new NotFoundException();
+		} else {
+
+			Page<ProductoDTO> dtoList = result.map(converterDTO::productoDTOconverter);
+
+			return ResponseEntity.ok().body(dtoList);
 		}
 	}
 	
