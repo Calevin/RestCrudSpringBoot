@@ -22,20 +22,20 @@ import com.example.demo.dtos.CreateProductoDTO;
 import com.example.demo.dtos.ProductoDTO;
 import com.example.demo.errores.NotFoundException;
 import com.example.demo.modelos.Producto;
-import com.example.demo.repositorios.ProductoRepositorio;
+import com.example.demo.servicios.ProductoServicio;
 
 @RestController
 public class ProductoController {
 
 	private final ConverterDTO converterDTO;
-	private final ProductoRepositorio productoRepositorio;
+	private final ProductoServicio productoServicio;
 	
 
 	@Autowired
-	public ProductoController(ProductoRepositorio productoRepositorio
+	public ProductoController(ProductoServicio productoServicio
 			, ConverterDTO converterDTO) {
 		super();
-		this.productoRepositorio = productoRepositorio;
+		this.productoServicio = productoServicio;
 		this.converterDTO = converterDTO;
 	}
 
@@ -46,7 +46,7 @@ public class ProductoController {
 	 */
 	@GetMapping("/producto")
 	public ResponseEntity<List<ProductoDTO>> obtenerTodos() {
-		List<Producto> productos = productoRepositorio.findAll();
+		List<Producto> productos = productoServicio.findAll();
 		if (productos.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		} else {
@@ -60,7 +60,7 @@ public class ProductoController {
 	public ResponseEntity<?> obtenerTodosPaginado(
 			@PageableDefault(size=10, page=0) Pageable pageable) {
 		
-		Page<Producto> productos = productoRepositorio.findAll(pageable);
+		Page<Producto> productos = productoServicio.findAll(pageable);
 		
 		if (productos.isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -80,7 +80,7 @@ public class ProductoController {
 	 */
 	@GetMapping("/producto/{id}")
 	public ProductoDTO obtenerUno(@PathVariable Long id) {
-		return productoRepositorio.findById(id).map(converterDTO::productoDTOconverter)
+		return productoServicio.findById(id).map(converterDTO::productoDTOconverter)
 				.orElseThrow(() -> new NotFoundException(id));
 	}
 
@@ -93,7 +93,7 @@ public class ProductoController {
 	@PostMapping("/producto")
 	public ResponseEntity<Producto> nuevoProducto(@RequestBody CreateProductoDTO createProducto) {
 		Producto productoNuevo =  converterDTO.createProductoDTOconverter(createProducto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(productoRepositorio.save(productoNuevo));
+		return ResponseEntity.status(HttpStatus.CREATED).body(productoServicio.save(productoNuevo));
 	}
 
 	/**
@@ -104,9 +104,9 @@ public class ProductoController {
 	 */
 	@PutMapping("/producto/{id}")
 	public Producto editarProducto(@RequestBody Producto editar, @PathVariable Long id) {
-		return productoRepositorio
+		return productoServicio
 				.findById(id)
-				.map(p -> productoRepositorio.save(editar))
+				.map(p -> productoServicio.save(editar))
 				.orElseThrow(() -> new NotFoundException(id));
 	}
 
@@ -118,10 +118,10 @@ public class ProductoController {
 	 */
 	@DeleteMapping("/producto/{id}")
 	public ResponseEntity<?> borrarProducto(@PathVariable Long id) {
-		return productoRepositorio
+		return productoServicio
 				.findById(id)
 				.map( p -> {
-					productoRepositorio.deleteById(id);
+					productoServicio.deleteById(id);
 					return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 				})
 				.orElseThrow(() -> new NotFoundException(id));
