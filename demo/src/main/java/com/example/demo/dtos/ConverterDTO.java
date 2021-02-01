@@ -21,6 +21,7 @@ public class ConverterDTO {
 		dto.setId(producto.getId());
 		dto.setNombre(producto.getNombre());
 		dto.setCategoriaNombre(producto.getCategoria().getNombre());
+		dto.setPrecio(producto.getPrecio());
 
 		return dto;
 	}

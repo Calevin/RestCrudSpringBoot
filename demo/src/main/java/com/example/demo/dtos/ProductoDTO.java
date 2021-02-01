@@ -1,10 +1,21 @@
 package com.example.demo.dtos;
 
+import com.example.demo.dtos.views.ProductoViews;
+import com.fasterxml.jackson.annotation.JsonView;
+
 public class ProductoDTO {
 
+	@JsonView(ProductoViews.Dto.class)
 	private long id;
+	
+	@JsonView(ProductoViews.Dto.class)
 	private String nombre;
+	
+	@JsonView(ProductoViews.Dto.class)
 	private String categoriaNombre;
+	
+	@JsonView(ProductoViews.DtoConPrecio.class)
+	private Float precio;
 
 	public long getId() {
 		return id;
@@ -28,5 +39,13 @@ public class ProductoDTO {
 
 	public void setCategoriaNombre(String categoriaNombre) {
 		this.categoriaNombre = categoriaNombre;
+	}
+
+	public Float getPrecio() {
+		return precio;
+	}
+
+	public void setPrecio(Float precio) {
+		this.precio = precio;
 	}
 }

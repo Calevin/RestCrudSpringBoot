@@ -25,10 +25,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.example.demo.dtos.ConverterDTO;
 import com.example.demo.dtos.CreateProductoDTO;
 import com.example.demo.dtos.ProductoDTO;
+import com.example.demo.dtos.views.ProductoViews;
 import com.example.demo.errores.NotFoundException;
 import com.example.demo.modelos.Producto;
 import com.example.demo.servicios.ProductoServicio;
 import com.example.demo.util.paginacion.PaginacionLinksUtils;
+import com.fasterxml.jackson.annotation.JsonView;
 
 @RestController
 public class ProductoController {
@@ -113,6 +115,28 @@ public class ProductoController {
 	
 	@GetMapping(value = "/producto_by_args")
 	public ResponseEntity<?> buscarProductosPorVarios(
+			@RequestParam("nombre") Optional<String> txt,
+			@RequestParam("precio") Optional<Float> precio,
+			Pageable pageable, HttpServletRequest request) {
+		
+		Page<Producto> result = productoServicio.findByArgs(txt, precio, pageable);
+	
+		if (result.isEmpty()) {
+			throw new NotFoundException();
+		} else {
+
+			Page<ProductoDTO> dtoList = result.map(converterDTO::productoDTOconverter);
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
+
+			return ResponseEntity.ok().header("link", paginacionLinksUtils.createLinkHeader(dtoList, uriBuilder))
+					.body(dtoList);
+		}
+		
+	}
+	
+	@JsonView(ProductoViews.DtoConPrecio.class)
+	@GetMapping(value = "/producto_by_args_dto")
+	public ResponseEntity<?> buscarProductosPorVariosDto(
 			@RequestParam("nombre") Optional<String> txt,
 			@RequestParam("precio") Optional<Float> precio,
 			Pageable pageable, HttpServletRequest request) {
