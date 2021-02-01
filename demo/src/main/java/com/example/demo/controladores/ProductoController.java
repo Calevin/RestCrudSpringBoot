@@ -69,9 +69,7 @@ public class ProductoController {
 			return ResponseEntity.notFound().build();
 		} else {
 			
-			return ResponseEntity.ok(productos.stream()
-										.map(converterDTO::productoDTOconverter)
-										.collect(Collectors.toList()));
+			return ResponseEntity.ok(productos.map(converterDTO::productoDTOconverter));
 		}
 	}
 	
