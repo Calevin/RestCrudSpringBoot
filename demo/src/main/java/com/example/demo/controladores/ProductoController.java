@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.demo.dtos.ConverterDTO;
 import com.example.demo.dtos.CreateProductoDTO;
@@ -26,20 +27,24 @@ import com.example.demo.dtos.ProductoDTO;
 import com.example.demo.errores.NotFoundException;
 import com.example.demo.modelos.Producto;
 import com.example.demo.servicios.ProductoServicio;
+import com.example.demo.util.paginacion.PaginacionLinksUtils;
 
 @RestController
 public class ProductoController {
 
 	private final ConverterDTO converterDTO;
 	private final ProductoServicio productoServicio;
+	private final PaginacionLinksUtils paginacionLinksUtils;
 	
 
 	@Autowired
 	public ProductoController(ProductoServicio productoServicio
-			, ConverterDTO converterDTO) {
+			, ConverterDTO converterDTO
+			, PaginacionLinksUtils paginacionLinksUtils) {
 		super();
 		this.productoServicio = productoServicio;
 		this.converterDTO = converterDTO;
+		this.paginacionLinksUtils = paginacionLinksUtils;
 	}
 
 	/**
@@ -61,15 +66,21 @@ public class ProductoController {
 	
 	@GetMapping("/producto_paginado")
 	public ResponseEntity<?> obtenerTodosPaginado(
-			@PageableDefault(size=10, page=0) Pageable pageable) {
+			@PageableDefault(size=10, page=0) Pageable pageable
+			, HttpServletRequest request) {
 		
 		Page<Producto> productos = productoServicio.findAll(pageable);
 		
 		if (productos.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		} else {
+			Page<ProductoDTO> dtoList = productos.map(converterDTO::productoDTOconverter);
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
 			
-			return ResponseEntity.ok(productos.map(converterDTO::productoDTOconverter));
+			return ResponseEntity
+					.ok()
+					.header("link", paginacionLinksUtils.createLinkHeader(dtoList, uriBuilder))
+					.body(dtoList);
 		}
 	}
 	
@@ -90,8 +101,12 @@ public class ProductoController {
 		} else {
 
 			Page<ProductoDTO> dtoList = result.map(converterDTO::productoDTOconverter);
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
 
-			return ResponseEntity.ok().body(dtoList);
+			return ResponseEntity
+					.ok()
+					.header("link", paginacionLinksUtils.createLinkHeader(dtoList, uriBuilder))
+					.body(dtoList);
 		}
 	}
 	
