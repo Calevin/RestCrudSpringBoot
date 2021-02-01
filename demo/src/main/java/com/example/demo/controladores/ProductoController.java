@@ -1,6 +1,7 @@
 package com.example.demo.controladores;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -108,6 +109,27 @@ public class ProductoController {
 					.header("link", paginacionLinksUtils.createLinkHeader(dtoList, uriBuilder))
 					.body(dtoList);
 		}
+	}
+	
+	@GetMapping(value = "/producto_by_args")
+	public ResponseEntity<?> buscarProductosPorVarios(
+			@RequestParam("nombre") Optional<String> txt,
+			@RequestParam("precio") Optional<Float> precio,
+			Pageable pageable, HttpServletRequest request) {
+		
+		Page<Producto> result = productoServicio.findByArgs(txt, precio, pageable);
+	
+		if (result.isEmpty()) {
+			throw new NotFoundException();
+		} else {
+
+			Page<ProductoDTO> dtoList = result.map(converterDTO::productoDTOconverter);
+			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
+
+			return ResponseEntity.ok().header("link", paginacionLinksUtils.createLinkHeader(dtoList, uriBuilder))
+					.body(dtoList);
+		}
+		
 	}
 	
 	/**
