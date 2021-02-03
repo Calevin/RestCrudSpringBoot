@@ -1,9 +1,9 @@
-package com.example.demo.dtos;
+package com.example.demo.dtos.producto;
 
 import com.example.demo.dtos.views.ProductoViews;
 import com.fasterxml.jackson.annotation.JsonView;
 
-public class ProductoDTO {
+public class GetProductoDTO {
 
 	@JsonView(ProductoViews.Dto.class)
 	private long id;

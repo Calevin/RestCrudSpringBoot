@@ -3,6 +3,8 @@ package com.example.demo.dtos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.demo.dtos.producto.CreateProductoDTO;
+import com.example.demo.dtos.producto.GetProductoDTO;
 import com.example.demo.modelos.Categoria;
 import com.example.demo.modelos.Producto;
 import com.example.demo.repositorios.CategoriaRepositorio;
@@ -16,8 +18,8 @@ public class ConverterDTO {
 	public ConverterDTO() {
 	}
 
-	public ProductoDTO productoDTOconverter(Producto producto) {
-		ProductoDTO dto = new ProductoDTO();
+	public GetProductoDTO productoDTOconverter(Producto producto) {
+		GetProductoDTO dto = new GetProductoDTO();
 		dto.setId(producto.getId());
 		dto.setNombre(producto.getNombre());
 		dto.setCategoriaNombre(producto.getCategoria().getNombre());

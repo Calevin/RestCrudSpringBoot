@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.demo.dtos.ConverterDTO;
-import com.example.demo.dtos.CreateProductoDTO;
-import com.example.demo.dtos.ProductoDTO;
+import com.example.demo.dtos.producto.CreateProductoDTO;
+import com.example.demo.dtos.producto.GetProductoDTO;
 import com.example.demo.dtos.views.ProductoViews;
 import com.example.demo.errores.NotFoundException;
 import com.example.demo.modelos.Producto;
@@ -56,7 +56,7 @@ public class ProductoController {
 	 * @return
 	 */
 	@GetMapping("/producto")
-	public ResponseEntity<List<ProductoDTO>> obtenerTodos() {
+	public ResponseEntity<List<GetProductoDTO>> obtenerTodos() {
 		List<Producto> productos = productoServicio.findAll();
 		if (productos.isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -77,7 +77,7 @@ public class ProductoController {
 		if (productos.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		} else {
-			Page<ProductoDTO> dtoList = productos.map(converterDTO::productoDTOconverter);
+			Page<GetProductoDTO> dtoList = productos.map(converterDTO::productoDTOconverter);
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
 			
 			return ResponseEntity
@@ -103,7 +103,7 @@ public class ProductoController {
 			throw new NotFoundException();
 		} else {
 
-			Page<ProductoDTO> dtoList = result.map(converterDTO::productoDTOconverter);
+			Page<GetProductoDTO> dtoList = result.map(converterDTO::productoDTOconverter);
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
 
 			return ResponseEntity
@@ -125,7 +125,7 @@ public class ProductoController {
 			throw new NotFoundException();
 		} else {
 
-			Page<ProductoDTO> dtoList = result.map(converterDTO::productoDTOconverter);
+			Page<GetProductoDTO> dtoList = result.map(converterDTO::productoDTOconverter);
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
 
 			return ResponseEntity.ok().header("link", paginacionLinksUtils.createLinkHeader(dtoList, uriBuilder))
@@ -147,7 +147,7 @@ public class ProductoController {
 			throw new NotFoundException();
 		} else {
 
-			Page<ProductoDTO> dtoList = result.map(converterDTO::productoDTOconverter);
+			Page<GetProductoDTO> dtoList = result.map(converterDTO::productoDTOconverter);
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
 
 			return ResponseEntity.ok().header("link", paginacionLinksUtils.createLinkHeader(dtoList, uriBuilder))
@@ -163,7 +163,7 @@ public class ProductoController {
 	 * @return Null si no encuentra el producto
 	 */
 	@GetMapping("/producto/{id}")
-	public ProductoDTO obtenerUno(@PathVariable Long id) {
+	public GetProductoDTO obtenerUno(@PathVariable Long id) {
 		return productoServicio.findById(id).map(converterDTO::productoDTOconverter)
 				.orElseThrow(() -> new NotFoundException(id));
 	}
