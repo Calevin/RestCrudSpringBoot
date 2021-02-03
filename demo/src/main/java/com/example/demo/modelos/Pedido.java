@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -23,7 +25,9 @@ public class Pedido {
 	@GeneratedValue
 	private Long id;
 
-	private String cliente;
+	@ManyToOne
+	@JoinColumn(name="cliente_id")
+	private Usuario cliente;
 
 	@CreatedDate
 	private LocalDateTime fecha;
@@ -36,7 +40,7 @@ public class Pedido {
 		super();
 	}
 
-	public Pedido(Long id, String cliente, LocalDateTime fecha, Set<LineaPedido> lineas) {
+	public Pedido(Long id, Usuario cliente, LocalDateTime fecha, Set<LineaPedido> lineas) {
 		super();
 		this.id = id;
 		this.cliente = cliente;
@@ -52,11 +56,11 @@ public class Pedido {
 		this.id = id;
 	}
 
-	public String getCliente() {
+	public Usuario getCliente() {
 		return cliente;
 	}
 
-	public void setCliente(String cliente) {
+	public void setCliente(Usuario cliente) {
 		this.cliente = cliente;
 	}
 

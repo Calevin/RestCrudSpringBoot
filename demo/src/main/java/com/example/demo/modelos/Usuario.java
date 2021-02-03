@@ -14,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.example.demo.seguridad.RolUsuario;
 
 @Entity
+@Table(name = "USUARIOS")
 @EntityListeners(AuditingEntityListener.class)
 public class Usuario implements UserDetails {
 
@@ -41,8 +43,10 @@ public class Usuario implements UserDetails {
 	private String avatar;
 
 	@CreatedDate
+	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;
 
+	@Column(name = "fecha_ultima_modificacion_password")
 	private LocalDateTime fechaUltimaModificacionPassword = LocalDateTime.now();
 
 	@ElementCollection(fetch = FetchType.EAGER)
