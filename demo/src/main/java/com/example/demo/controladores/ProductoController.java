@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.example.demo.dtos.ConverterDTO;
 import com.example.demo.dtos.producto.CreateProductoDTO;
 import com.example.demo.dtos.producto.GetProductoDTO;
+import com.example.demo.dtos.producto.ProductoConverterDTO;
 import com.example.demo.dtos.views.ProductoViews;
 import com.example.demo.errores.NotFoundException;
 import com.example.demo.modelos.Producto;
@@ -35,14 +35,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 @RestController
 public class ProductoController {
 
-	private final ConverterDTO converterDTO;
+	private final ProductoConverterDTO converterDTO;
 	private final ProductoServicio productoServicio;
 	private final PaginacionLinksUtils paginacionLinksUtils;
 	
 
 	@Autowired
 	public ProductoController(ProductoServicio productoServicio
-			, ConverterDTO converterDTO
+			, ProductoConverterDTO converterDTO
 			, PaginacionLinksUtils paginacionLinksUtils) {
 		super();
 		this.productoServicio = productoServicio;

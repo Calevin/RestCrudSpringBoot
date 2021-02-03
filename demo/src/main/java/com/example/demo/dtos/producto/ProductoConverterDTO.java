@@ -1,21 +1,19 @@
-package com.example.demo.dtos;
+package com.example.demo.dtos.producto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.dtos.producto.CreateProductoDTO;
-import com.example.demo.dtos.producto.GetProductoDTO;
 import com.example.demo.modelos.Categoria;
 import com.example.demo.modelos.Producto;
 import com.example.demo.repositorios.CategoriaRepositorio;
 
 @Component
-public class ConverterDTO {
+public class ProductoConverterDTO {
 	
 	@Autowired
 	CategoriaRepositorio categoriaRepo;
 	
-	public ConverterDTO() {
+	public ProductoConverterDTO() {
 	}
 
 	public GetProductoDTO productoDTOconverter(Producto producto) {
