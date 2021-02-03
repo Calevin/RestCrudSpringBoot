@@ -19,6 +19,14 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 				.body(new ApiError(HttpStatus.NOT_FOUND, ex.getMessage()));
 	}
 	
+	@ExceptionHandler(PasswordNoCoincideException.class)
+	public ResponseEntity<ApiError> PasswordNoCoincideException(NotFoundException ex){
+		
+		return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.body(new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+	}
+	
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
