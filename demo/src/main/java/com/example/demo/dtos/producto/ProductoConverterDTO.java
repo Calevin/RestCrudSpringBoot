@@ -16,7 +16,7 @@ public class ProductoConverterDTO {
 	public ProductoConverterDTO() {
 	}
 
-	public GetProductoDTO productoDTOconverter(Producto producto) {
+	public GetProductoDTO convertProductoToGetProductoDTO(Producto producto) {
 		GetProductoDTO dto = new GetProductoDTO();
 		dto.setId(producto.getId());
 		dto.setNombre(producto.getNombre());
@@ -26,7 +26,7 @@ public class ProductoConverterDTO {
 		return dto;
 	}
 	
-	public Producto createProductoDTOconverter(CreateProductoDTO createProducto) {
+	public Producto convertCreateProductoToProducto(CreateProductoDTO createProducto) {
 		Producto producto = new Producto();
 		producto.setNombre(createProducto.getNombre());
 		producto.setPrecio(createProducto.getPrecio()); 
