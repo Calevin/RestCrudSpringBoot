@@ -24,4 +24,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 				.orElseThrow(() -> new UsernameNotFoundException(username + " no encontrado"));
 	}
 
+	public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
+		
+		return  this.usuarioServicio
+				.findById(id)
+				.orElseThrow(() -> new UsernameNotFoundException("Usuario con ID: " + id + " no encontrado"));
+	}
 }
